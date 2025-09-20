@@ -87,3 +87,7 @@ venv/
 
 # VS Code
 .vscode/
+
+# Generated output
+results/
+data_cache/
