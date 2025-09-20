@@ -2,7 +2,7 @@ from dateutil.relativedelta import relativedelta
 from openai import OpenAI
 from tqdm import tqdm
 
-from app.core.config import DATA_DIR
+from app.core.config import DATA_DIR, set_config
 from .finnhub_utils import get_data_in_range
 from .google_news_utils import *
 from .reddit_utils import fetch_top_from_category
