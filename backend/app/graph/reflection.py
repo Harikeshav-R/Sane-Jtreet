@@ -49,3 +49,17 @@ Adhere strictly to these instructions, and ensure your output is detailed, accur
 
         return f"{curr_market_report}\n\n{curr_sentiment_report}\n\n{curr_news_report}\n\n{curr_fundamentals_report}"
 
+    def _reflect_on_component(
+            self, component_type: str, report: str, situation: str, returns_losses
+    ) -> str:
+        messages = [
+            ("system", self.reflection_system_prompt),
+            (
+                "human",
+                f"Returns: {returns_losses}\n\nAnalysis/Decision: {report}\n\nObjective Market Reports for Reference: {situation}",
+            ),
+        ]
+
+        result = self.quick_thinking_llm.invoke(messages).content
+        return result
+
