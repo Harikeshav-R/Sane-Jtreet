@@ -15,3 +15,31 @@ class FinancialSituationMemory:
         self.chroma_client = chromadb.Client(Settings(allow_reset=True))
         self.situation_collection = self.chroma_client.create_collection(name=name)
 
+    def get_embedding(self, text):
+        response = self.client.embeddings.create(
+            model=self.embedding, input=text
+        )
+        return response.data[0].embedding
+
+    def add_situations(self, situations_and_advice):
+        """Add financial situations and their corresponding advice. Parameter is a list of tuples (situation, rec)"""
+
+        situations = []
+        advice = []
+        ids = []
+        embeddings = []
+
+        offset = self.situation_collection.count()
+
+        for i, (situation, recommendation) in enumerate(situations_and_advice):
+            situations.append(situation)
+            advice.append(recommendation)
+            ids.append(str(offset + i))
+            embeddings.append(self.get_embedding(situation))
+
+        self.situation_collection.add(
+            documents=situations,
+            metadatas=[{"recommendation": rec} for rec in advice],
+            embeddings=embeddings,
+            ids=ids,
+        )
