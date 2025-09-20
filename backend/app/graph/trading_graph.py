@@ -127,3 +127,70 @@ class TradingAgentsGraph:
             ),
         }
 
+    def propagate(self, company_name, trade_date):
+        self.ticker = company_name
+
+        init_agent_state = self.propagator.create_initial_state(
+            company_name, trade_date
+        )
+        args = self.propagator.get_graph_args()
+
+        if self.debug:
+            trace = []
+            for chunk in self.graph.stream(init_agent_state, **args):
+                if len(chunk["messages"]) == 0:
+                    pass
+                else:
+                    chunk["messages"][-1].pretty_print()
+                    trace.append(chunk)
+
+            final_state = trace[-1]
+        else:
+            final_state = self.graph.invoke(init_agent_state, **args)
+
+        self.curr_state = final_state
+
+        self._log_state(trade_date, final_state)
+
+        return final_state, self.process_signal(final_state["final_trade_decision"])
+
+    def _log_state(self, trade_date, final_state):
+        self.log_states_dict[str(trade_date)] = {
+            "company_of_interest": final_state["company_of_interest"],
+            "trade_date": final_state["trade_date"],
+            "market_report": final_state["market_report"],
+            "sentiment_report": final_state["sentiment_report"],
+            "news_report": final_state["news_report"],
+            "fundamentals_report": final_state["fundamentals_report"],
+            "investment_debate_state": {
+                "bull_history": final_state["investment_debate_state"]["bull_history"],
+                "bear_history": final_state["investment_debate_state"]["bear_history"],
+                "history": final_state["investment_debate_state"]["history"],
+                "current_response": final_state["investment_debate_state"][
+                    "current_response"
+                ],
+                "judge_decision": final_state["investment_debate_state"][
+                    "judge_decision"
+                ],
+            },
+            "trader_investment_decision": final_state["trader_investment_plan"],
+            "risk_debate_state": {
+                "risky_history": final_state["risk_debate_state"]["risky_history"],
+                "safe_history": final_state["risk_debate_state"]["safe_history"],
+                "neutral_history": final_state["risk_debate_state"]["neutral_history"],
+                "history": final_state["risk_debate_state"]["history"],
+                "judge_decision": final_state["risk_debate_state"]["judge_decision"],
+            },
+            "investment_plan": final_state["investment_plan"],
+            "final_trade_decision": final_state["final_trade_decision"],
+        }
+
+        directory = Path(f"eval_results/{self.ticker}/TradingAgentsStrategy_logs/")
+        directory.mkdir(parents=True, exist_ok=True)
+
+        with open(
+                f"eval_results/{self.ticker}/TradingAgentsStrategy_logs/full_states_log_{trade_date}.json",
+                "w",
+        ) as f:
+            json.dump(self.log_states_dict, f, indent=4)
+
