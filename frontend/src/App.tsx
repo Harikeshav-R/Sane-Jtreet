@@ -1,57 +1,37 @@
-import { useState, useEffect } from 'react';
-import './App.css';
+import { useState } from 'react'
+import { Hero } from './components/Hero'
+import { StockDashboard } from './components/StockDashboard'
 
 function App() {
-  const [dbVersion, setDbVersion] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // In production, the API is at the same origin under /api/
-    // In development, the full URL is needed due to different ports.
-    const apiUrl = import.meta.env.DEV
-      ? 'http://localhost:8000/api/db-version'
-      : '/api/db-version';
-
-    const fetchDbVersion = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        if(data.error) {
-          throw new Error(data.error);
-        }
-        setDbVersion(data.db_version);
-      } catch (e) {
-        if (e instanceof Error) {
-            setError(e.message);
-        } else {
-            setError("An unknown error occurred.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDbVersion();
-  }, []);
+  const [selectedStock, setSelectedStock] = useState('AAPL')
 
   return (
-    <div className="card">
-      <h1>FastAPI + React</h1>
-      <p>Hello from the Vite + React frontend!</p>
-      <div className="status-box">
-        <h3>Backend API Status</h3>
-        {loading && <p>Loading DB version...</p>}
-        {error && <p className="error">Error: {error}</p>}
-        {dbVersion && <p className="success">PostgreSQL Version: <code>{dbVersion}</code></p>}
+    <div 
+      className="min-h-screen text-white"
+      style={{
+        backgroundColor: '#0f0f0f',
+        color: '#ffffff',
+        minHeight: '100vh',
+        fontFamily: "'Inter', system-ui, sans-serif"
+      }}
+    >
+      <div 
+        style={{
+          background: `
+            radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+            linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%)
+          `
+        }}
+      >
+        <Hero 
+          selectedStock={selectedStock}
+          onStockChange={setSelectedStock}
+        />
+        <StockDashboard stock={selectedStock} />
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

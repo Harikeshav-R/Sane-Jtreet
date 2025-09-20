@@ -1,13 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark" style="background-color: #0f0f0f; color: #ffffff;">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Stock Research Dashboard</title>
+    <style>
+      /* Prevent flash of white content */
+      html, body, #root {
+        background-color: #0f0f0f !important;
+        color: #ffffff !important;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+    </style>
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="background-color: #0f0f0f; color: #ffffff; margin: 0; padding: 0;">
+    <div id="root" style="background-color: #0f0f0f; color: #ffffff; min-height: 100vh;"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
