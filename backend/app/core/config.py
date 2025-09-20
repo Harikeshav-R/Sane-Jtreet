@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-import default_config
+from app.core import default_config
 
 _config: Optional[Dict] = None
 DATA_DIR: Optional[str] = None
