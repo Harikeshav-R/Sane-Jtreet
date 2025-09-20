@@ -63,3 +63,20 @@ Adhere strictly to these instructions, and ensure your output is detailed, accur
         result = self.quick_thinking_llm.invoke(messages).content
         return result
 
+    def reflect_bull_researcher(self, current_state, returns_losses, bull_memory):
+        situation = self._extract_current_situation(current_state)
+        bull_debate_history = current_state["investment_debate_state"]["bull_history"]
+
+        result = self._reflect_on_component(
+            "BULL", bull_debate_history, situation, returns_losses
+        )
+        bull_memory.add_situations([(situation, result)])
+
+    def reflect_bear_researcher(self, current_state, returns_losses, bear_memory):
+        situation = self._extract_current_situation(current_state)
+        bear_debate_history = current_state["investment_debate_state"]["bear_history"]
+
+        result = self._reflect_on_component(
+            "BEAR", bear_debate_history, situation, returns_losses
+        )
+        bear_memory.add_situations([(situation, result)])
