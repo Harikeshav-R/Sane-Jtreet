@@ -1,0 +1,7 @@
+[project]
+name = "Sane-Jtreet"
+version = "0.1.0"
+description = "LLM-Powered Financial Trading Research Platform"
+readme = "../README.md"
+requires-python = ">=3.13"
+dependencies = []
